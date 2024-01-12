@@ -5,29 +5,19 @@ int main(void)
 {
     char *prompt = "#cisfun$ ";
     char command[100];
-    int i;  /* Declare the variable at the beginning of the block */
 
     while (1)
     {
         printf("%s", prompt);
-        fgets(command, sizeof(command), stdin);
 
-        /* Handle Ctrl+D (End of File) condition */
-        if (feof(stdin))
-        {
-            printf("\n");
-            break;
+        if (fgets(command, sizeof(command), stdin) == NULL) {
+            break;  // Handle Ctrl+D (End of File)
         }
 
-        /* Remove the newline character from the command */
-        i = 0; /* Move the declaration outside the loop */
-        while (command[i] != '\n')
-        {
-            i++;
-        }
-        command[i] = '\0';
+        // Remove the newline character from the command
+        command[strcspn(command, "\n")] = '\0';
 
-        /* Execute /bin/ls command */
+        // Execute /bin/ls command
         if (strcmp(command, "/bin/ls") == 0)
         {
             printf("barbie_j       env-main.c  exec.c  fork.c  pid.c  ppid.c    prompt   prompt.c  shell.c  stat.c         wait\n");
@@ -44,7 +34,7 @@ int main(void)
         }
         else
         {
-            printf("./shell: No such file or directory\n");
+            fprintf(stderr, "./shell: No such file or directory\n");
         }
     }
 
