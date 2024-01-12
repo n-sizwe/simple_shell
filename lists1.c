@@ -1,74 +1,122 @@
 #include "shell.h"
 
 /**
- * _strncpy - Copies a string with a specified maximum length.
- * @dest: The destination string to be copied to.
- * @src: The source string.
- * @n: The maximum number of characters to be copied.
- * Return: A pointer to the concatenated string.
+ * list_len - determines length of linked list
+ * @h: pointer to first node
+ *
+ * Return: size of list
  */
-char *_strncpy(char *dest, char *src, int n)
+size_t list_len(const list_t *h)
 {
-	int i, j;
-	char *s = dest;
+	size_t i = 0;
 
-	i = 0;
-	while (src[i] != '\0' && i < n - 1)
+	while (h)
 	{
-		dest[i] = src[i];
+		h = h->next;
 		i++;
 	}
-	if (i < n)
+	return (i);
+}
+
+/**
+ * list_to_strings - returns an array of strings of the list->str
+ * @head: pointer to first node
+ *
+ * Return: array of strings
+ */
+char **list_to_strings(list_t *head)
+{
+	list_t *node = head;
+	size_t i = list_len(head), j;
+	char **strs;
+	char *str;
+
+	if (!head || !i)
+		return (NULL);
+	strs = malloc(sizeof(char *) * (i + 1));
+	if (!strs)
+		return (NULL);
+	for (i = 0; node; node = node->next, i++)
 	{
-		j = i;
-		while (j < n)
+		str = malloc(_strlen(node->str) + 1);
+		if (!str)
 		{
-			dest[j] = '\0';
-			j++;
+			for (j = 0; j < i; j++)
+				free(strs[j]);
+			free(strs);
+			return (NULL);
 		}
+
+		str = _strcpy(str, node->str);
+		strs[i] = str;
 	}
-	return (s);
+	strs[i] = NULL;
+	return (strs);
 }
 
-/**
- * _strncat - Concatenates two strings with a specified maximum length.
- * @dest: The first string.
- * @src: The second string.
- * @n: The maximum number of bytes to be used.
- * Return: A pointer to the concatenated string.
- */
-char *_strncat(char *dest, char *src, int n)
-{
-	int i, j;
-	char *s = dest;
 
-	i = 0;
-	j = 0;
-	while (dest[i] != '\0')
-		i++;
-	while (src[j] != '\0' && j < n)
+/**
+ * print_list - prints all elements of a list_t linked list
+ * @h: pointer to first node
+ *
+ * Return: size of list
+ */
+size_t print_list(const list_t *h)
+{
+	size_t i = 0;
+
+	while (h)
 	{
-		dest[i] = src[j];
+		_puts(convert_number(h->num, 10, 0));
+		_putchar(':');
+		_putchar(' ');
+		_puts(h->str ? h->str : "(nil)");
+		_puts("\n");
+		h = h->next;
 		i++;
-		j++;
 	}
-	if (j < n)
-		dest[i] = '\0';
-	return (s);
+	return (i);
 }
 
 /**
- * _strchr - Locates a character in a string.
- * @s: The string to be parsed.
- * @c: The character to look for.
- * Return: A pointer to the memory area in the string.
+ * node_starts_with - returns node whose string starts with prefix
+ * @node: pointer to list head
+ * @prefix: string to match
+ * @c: the next character after prefix to match
+ *
+ * Return: match node or null
  */
-char *_strchr(char *s, char c)
+list_t *node_starts_with(list_t *node, char *prefix, char c)
 {
-	do {
-		if (*s == c)
-			return (s);
-	} while (*s++ != '\0');
+	char *p = NULL;
 
+	while (node)
+	{
+		p = starts_with(node->str, prefix);
+		if (p && ((c == -1) || (*p == c)))
+			return (node);
+		node = node->next;
+	}
 	return (NULL);
+}
+
+/**
+ * get_node_index - gets the index of a node
+ * @head: pointer to list head
+ * @node: pointer to the node
+ *
+ * Return: index of node or -1
+ */
+ssize_t get_node_index(list_t *head, list_t *node)
+{
+	size_t i = 0;
+
+	while (head)
+	{
+		if (head == node)
+			return (i);
+		head = head->next;
+		i++;
+	}
+	return (-1);
 }
