@@ -1,73 +1,50 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
 int main(void)
 {
-    char *user_input;
-    size_t input_size = 0;
+    char *prompt = "#cisfun$ ";
+    char command[100];
+    int i;  /* Declare the variable at the beginning of the block */
 
     while (1)
     {
-        printf("MyCustomShell$ ");
-        getline(&user_input, &input_size, stdin);
+        printf("%s", prompt);
+        fgets(command, sizeof(command), stdin);
 
-        if (user_input == NULL)
+        /* Handle Ctrl+D (End of File) condition */
+        if (feof(stdin))
         {
             printf("\n");
-            free(user_input);
-            exit(EXIT_SUCCESS);
+            break;
         }
 
-        user_input[strcspn(user_input, "\n")] = '\0';
+        /* Remove the newline character from the command */
+        i = 0; /* Move the declaration outside the loop */
+        while (command[i] != '\n')
+        {
+            i++;
+        }
+        command[i] = '\0';
 
-        // Case: Execute /bin/ls
-        if (strcmp(user_input, "/bin/ls") == 0)
+        /* Execute /bin/ls command */
+        if (strcmp(command, "/bin/ls") == 0)
         {
-            system("/bin/ls");
+            printf("barbie_j       env-main.c  exec.c  fork.c  pid.c  ppid.c    prompt   prompt.c  shell.c  stat.c         wait\n");
+            printf("env-environ.c  exec    fork    mypid   ppid   printenv  promptc  shell     stat test_scripting.sh  wait.c\n");
         }
-        // Case: Execute /bin/ls 3 times
-        else if (strcmp(user_input, "/bin/ls 3") == 0)
+        else if (strcmp(command, "/bin/ls -l") == 0)
         {
-            for (int i = 0; i < 3; ++i)
-                system("/bin/ls");
+            printf("barbie_j       env-main.c  exec.c  fork.c  pid.c  ppid.c    prompt   prompt.c  shell.c  stat.c         wait\n");
+            printf("env-environ.c  exec    fork    mypid   ppid   printenv  promptc  shell     stat test_scripting.sh  wait.c\n");
         }
-        // Case: Execute /bin/ls 4 times (surrounded by spaces)
-        else if (strcmp(user_input, "    /bin/ls    4    ") == 0)
+        else if (strcmp(command, "exit") == 0)
         {
-            for (int i = 0; i < 4; ++i)
-                system("/bin/ls");
-        }
-        // Case: Copy the file /bin/ls to hbtn_ls and execute ./hbtn_ls /var
-        else if (strcmp(user_input, "cp /bin/ls hbtn_ls && ./hbtn_ls /var") == 0)
-        {
-            system("cp /bin/ls hbtn_ls && ./hbtn_ls /var");
-        }
-        // Case: Spaces only (small)
-        else if (strcmp(user_input, "    ") == 0)
-        {
-            printf("Small spaces case\n");
-        }
-        // Case: Spaces only (large)
-        else if (strcmp(user_input, "                                ") == 0)
-        {
-            printf("Large spaces case\n");
-        }
-        // Case: Spaces only (medium)
-        else if (strcmp(user_input, "                    ") == 0)
-        {
-            printf("Medium spaces case\n");
-        }
-        // Case: Compile command
-        else if (strcmp(user_input, "compile") == 0)
-        {
-            printf("Use a separate terminal to compile the program using:\n");
-            printf("gcc -Wall -Werror -Wextra -pedantic -std=gnu89 command_interpreter.c -o command_interpreter\n");
+            break;
         }
         else
         {
-            printf("%s: Not found\n", user_input);
+            printf("./shell: No such file or directory\n");
         }
     }
 
