@@ -1,5 +1,3 @@
-#include "shell.h"
-
 /**
  * clear_info - initializes info_t struct
  * @info: struct address
@@ -24,10 +22,9 @@ void set_info(info_t *info, char **av)
 	info->fname = av[0];
 	if (info->arg)
 	{
-		info->argv = strtow(info->arg, " \t");
+		info->argv = strdup_list(info->arg, " \t");
 		if (!info->argv)
 		{
-
 			info->argv = malloc(sizeof(char *) * 2);
 			if (info->argv)
 			{
@@ -35,6 +32,14 @@ void set_info(info_t *info, char **av)
 				info->argv[1] = NULL;
 			}
 		}
+
+		if (!info->argv)
+		{
+			/* Handle memory allocation failure */
+			perror("Memory allocation failure");
+			exit(EXIT_FAILURE);
+		}
+
 		for (i = 0; info->argv && info->argv[i]; i++)
 			;
 		info->argc = i;
@@ -51,9 +56,11 @@ void set_info(info_t *info, char **av)
  */
 void free_info(info_t *info, int all)
 {
-	ffree(info->argv);
+	free_list(&(info->argv));
 	info->argv = NULL;
+	free(info->path);
 	info->path = NULL;
+
 	if (all)
 	{
 		if (!info->cmd_buf)
@@ -64,10 +71,10 @@ void free_info(info_t *info, int all)
 			free_list(&(info->history));
 		if (info->alias)
 			free_list(&(info->alias));
-		ffree(info->environ);
-			info->environ = NULL;
-		bfree((void **)info->cmd_buf);
-		if (info->readfd > 2)
+		free(info->environ);
+		info->environ = NULL;
+		free(info->cmd_buf);
+		if (info->readfd != STDIN_FILENO)
 			close(info->readfd);
 		_putchar(BUF_FLUSH);
 	}
