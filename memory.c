@@ -12,7 +12,7 @@ int bfree(void **ptr)
 	{
 		free(*ptr);
 		*ptr = NULL;
-		return (1);
+		return 1; // Freed successfully
 	}
-	return (0);
+	return 0; // Not freed (either NULL or already freed)
 }
