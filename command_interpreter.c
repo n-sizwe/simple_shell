@@ -22,11 +22,14 @@ int main(void)
 
         user_input[strcspn(user_input, "\n")] = '\0';
 
-        // Compile the program
-        system("gcc -Wall -Werror -Wextra -pedantic -std=gnu89 command_interpreter.c -o command_interpreter");
-
+        // Case: Compile the program
+        if (strcmp(user_input, "compile") == 0)
+        {
+            system("gcc -Wall -Werror -Wextra -pedantic -std=gnu89 command_interpreter.c -o command_interpreter");
+            printf("Compilation successful.\n");
+        }
         // Case: Execute /bin/ls
-        if (strcmp(user_input, "/bin/ls") == 0)
+        else if (strcmp(user_input, "/bin/ls") == 0)
         {
             system("/bin/ls");
         }
