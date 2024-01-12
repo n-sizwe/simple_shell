@@ -22,14 +22,8 @@ int main(void)
 
         user_input[strcspn(user_input, "\n")] = '\0';
 
-        // Case: Compile the program
-        if (strcmp(user_input, "compile") == 0)
-        {
-            system("gcc -Wall -Werror -Wextra -pedantic -std=gnu89 command_interpreter.c -o command_interpreter");
-            printf("Compilation successful.\n");
-        }
         // Case: Execute /bin/ls
-        else if (strcmp(user_input, "/bin/ls") == 0)
+        if (strcmp(user_input, "/bin/ls") == 0)
         {
             system("/bin/ls");
         }
@@ -64,6 +58,12 @@ int main(void)
         else if (strcmp(user_input, "                    ") == 0)
         {
             printf("Medium spaces case\n");
+        }
+        // Case: Compile command
+        else if (strcmp(user_input, "compile") == 0)
+        {
+            printf("Use a separate terminal to compile the program using:\n");
+            printf("gcc -Wall -Werror -Wextra -pedantic -std=gnu89 command_interpreter.c -o command_interpreter\n");
         }
         else
         {
